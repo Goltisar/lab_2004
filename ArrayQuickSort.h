@@ -1,5 +1,4 @@
 #pragma once
-#define MAXSTACK 2048 // максимальный размер стека
 
 void recursiveQuickSort(int* arr, int start, int end)
 {
@@ -23,47 +22,42 @@ void recursiveQuickSort(int* arr, int start, int end)
         recursiveQuickSort(arr, i, end);
 }
 
-int partition(int* arr, int start, int end)
-{
-	int tmp;
-	int pivot = arr[end];
-	int pIndex = start;
-	for (int i = start; i < end; ++i)
-		if (arr[i] < pivot)
-		{
-			tmp = arr[i];
-			arr[i] = arr[pIndex];
-			arr[pIndex] = tmp;
-			pIndex++;
-		}
-	tmp = arr[end];
-	arr[end] = arr[pIndex];
-	arr[pIndex] = tmp;
-	return pIndex;
-}
 void iterativeQuickSort(int* arr, int start, int end)
 {
-	const int stackSize = 2048;
-	int stack[stackSize];
+	const int dim = 100;
+	int tempMemory[dim];
 	int top = -1;
-	stack[++top] = start;
-	stack[++top] = end;
+	tempMemory[++top] = start;
+	tempMemory[++top] = end;
 
 	while (top >= 0)
 	{
-		end = stack[top--];
-		start = stack[top--];
-		int pivot_index = partition(arr, start, end);
+		end = tempMemory[top--];
+		start = tempMemory[top--];
+		int tmp;
+		int pivot = arr[end];
+		int pIndex = start;
+		for (int i = start; i < end; ++i)
+			if (arr[i] < pivot)
+			{
+				tmp = arr[i];
+				arr[i] = arr[pIndex];
+				arr[pIndex] = tmp;
+				pIndex++;
+			}
+		tmp = arr[end];
+		arr[end] = arr[pIndex];
+		arr[pIndex] = tmp;
 
-		if (pivot_index - 1 > start)
+		if (pIndex - 1 > start)
 		{
-			stack[++top] = start;
-			stack[++top] = pivot_index - 1;
+			tempMemory[++top] = start;
+			tempMemory[++top] = pIndex - 1;
 		}
-		if (pivot_index + 1 < end)
+		if (pIndex + 1 < end)
 		{
-			stack[++top] = pivot_index + 1;
-			stack[++top] = end;
+			tempMemory[++top] = pIndex + 1;
+			tempMemory[++top] = end;
 		}
 	}
 }
